@@ -1,22 +1,37 @@
 <!DOCTYPE html>
-
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Wholesale & Retail Price List</title>
 
 <style>
+
 body{
   font-family:Arial,sans-serif;
   margin:20px;
   background:#f8f9fa;
 }
 
+/* Heading */
+
 h2{
   text-align:center;
+  margin-bottom:5px;
+}
+
+/* Updated Date */
+
+.updated{
+  text-align:center;
+  color:#666;
+  font-size:14px;
   margin-bottom:15px;
 }
+
+/* Search */
 
 .search-box{
   display:flex;
@@ -30,7 +45,14 @@ h2{
   font-size:16px;
   border:1px solid #ccc;
   border-radius:6px;
+  outline:none;
 }
+
+.search-box input:focus{
+  border-color:#007bff;
+}
+
+/* Table */
 
 table{
   width:100%;
@@ -39,11 +61,14 @@ table{
   box-shadow:0 2px 6px rgba(0,0,0,.1);
 }
 
-th,td{
+th,
+td{
   padding:10px;
   text-align:center;
   border:1px solid #ccc;
 }
+
+/* Main Headers */
 
 th.product-header{
   background:#007bff;
@@ -60,6 +85,8 @@ th.retail{
   color:#fff;
 }
 
+/* Sub Headers */
+
 th.wholesale-sub{
   background:#d1e7dd;
   color:#14532d;
@@ -70,6 +97,8 @@ th.retail-sub{
   color:#842029;
 }
 
+/* Cells */
+
 td.wholesale{
   background:#f0faf5;
 }
@@ -78,9 +107,13 @@ td.retail{
   background:#fff5f5;
 }
 
+/* Hover */
+
 tr:hover td{
   background:#f1f1f1;
 }
+
+/* No Results */
 
 .no-results{
   text-align:center;
@@ -89,7 +122,10 @@ tr:hover td{
   color:gray;
 }
 
+/* Mobile */
+
 @media(max-width:700px){
+
   body{
     margin:8px;
   }
@@ -98,74 +134,215 @@ tr:hover td{
     font-size:13px;
   }
 
-  th,td{
+  th,
+  td{
     padding:7px 4px;
   }
 
   .search-box input{
     width:100%;
   }
+
 }
+
 </style>
 
 </head>
 
+
 <body>
+
 
 <h2>Wholesale & Retail Price List</h2>
 
-<div class="search-box">
-<input type="text" id="searchInput" placeholder="Search for products...">
+
+<!-- Current Date and Time -->
+
+<div class="updated">
+  Updated as on <span id="updatedDate"></span>
 </div>
+
+
+<!-- Search Box -->
+
+<div class="search-box">
+
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Search for products..."
+  >
+
+</div>
+
+
+<!-- Product Table -->
 
 <table id="productTable">
 
 <thead>
 
 <tr>
-  <th class="product-header" rowspan="2">Product Name</th>
-  <th class="product-header" rowspan="2">Quantity</th>
-  <th class="wholesale" colspan="2">Wholesale</th>
-  <th class="retail" colspan="2">Retail</th>
+
+  <th class="product-header" rowspan="2">
+    Product Name
+  </th>
+
+  <th class="product-header" rowspan="2">
+    Quantity
+  </th>
+
+  <th class="wholesale" colspan="2">
+    Wholesale
+  </th>
+
+  <th class="retail" colspan="2">
+    Retail
+  </th>
+
 </tr>
 
+
 <tr>
-  <th class="wholesale-sub">Cash</th>
-  <th class="wholesale-sub">GST</th>
-  <th class="retail-sub">Cash</th>
-  <th class="retail-sub">GST</th>
+
+  <th class="wholesale-sub">
+    Cash
+  </th>
+
+  <th class="wholesale-sub">
+    GST
+  </th>
+
+  <th class="retail-sub">
+    Cash
+  </th>
+
+  <th class="retail-sub">
+    GST
+  </th>
+
 </tr>
 
 </thead>
 
+
 <tbody id="tableBody">
 </tbody>
 
+
 </table>
 
-<p id="noResults" class="no-results" style="display:none;">
-No products found
+
+<p
+  id="noResults"
+  class="no-results"
+  style="display:none;"
+>
+  No products found
 </p>
+
 
 <script>
 
-// 📦 Product dictionary
+
+// =====================================================
+// CURRENT DATE & TIME
+// =====================================================
+
+function updateDateTime(){
+
+  const now = new Date();
+
+  const day =
+    String(now.getDate()).padStart(2,"0");
+
+  const month =
+    String(now.getMonth() + 1).padStart(2,"0");
+
+  const year =
+    now.getFullYear();
+
+  const hours =
+    String(now.getHours()).padStart(2,"0");
+
+  const minutes =
+    String(now.getMinutes()).padStart(2,"0");
+
+  document.getElementById("updatedDate").textContent =
+    `${day}/${month}/${year} ${hours}:${minutes}`;
+
+}
+
+
+// Run when page loads
+
+updateDateTime();
+
+
+// =====================================================
+// PRODUCT DICTIONARY
+// =====================================================
 //
 // Format:
-// ["Product Name","Quantity",WholesaleCash,WholesaleGST,RetailCash,RetailGST]
+//
+// ["Product Name",
+//  "Quantity",
+//  WholesaleCash,
+//  WholesaleGST,
+//  RetailCash,
+//  RetailGST]
+//
+// Missing values are automatically shown as blank.
+// =====================================================
 
 const products = [
 
-  ["Gypblock Board 6'x4'x12.5mm","1 Nos",330,360,400,450],
+  ["Gypblock Board 6'x4'x12.5mm","1 nos",390,418,410],
 
-  ["Gyproc Board 6'x4'x12.5mm","1 Nos",430,465,500,540],
+  ["Gyproc Board 6'x4'x12.5mm","1 nos",465,495,490],
 
-  ["Xpert Gypsum Plaster","20 Kg",240,252,280,294],
+  ["Xpert Gypsum Plaster","25 kg",364,364],
 
-  ["Xpert Gypsum Plaster","25 Kg",290,304.5,330,346.5]
+  ["Elite 100 Gypsum Plaster","20 kg",390,390],
+
+  ["Xpert Ceiling Section 2440mm","1 nos",130,143],
+
+  ["Xpert Intermediate 2440mm","1 nos",130,143],
+
+  ["Xpert Perimeter 2440mm","1 nos",93,97],
+
+  ["Xpert Ceiling Angle 2440mm","1 nos",47,52],
+
+  ["Gypserra Ceiling Section 3660mm","1 nos"],
+
+  ["Gypserra Intermediate 3660mm","1 nos"],
+
+  ["Gypserra Perimeter 3660mm","1 nos"],
+
+  ["Gypserra Ceiling Angle 3660mm","1 nos"],
+
+  ["Magnic Ceiling Section 2440mm","1 nos"],
+
+  ["Magnic Intermediate 2440mm","1 nos"],
+
+  ["Magnic Perimeter 2440mm","1 nos"],
+
+  ["Magnic Ceiling Angle 2440mm","1 nos"],
+
+  ["Megastil Ceiling Section 2440mm","1 nos"],
+
+  ["Megastil Intermediate 2440mm","1 nos"],
+
+  ["Megastil Perimeter 2440mm","1 nos"],
+
+  ["Megastil Ceiling Angle 2440mm","1 nos"]
 
 ];
 
+
+// =====================================================
+// ELEMENTS
+// =====================================================
 
 const tableBody =
   document.getElementById("tableBody");
@@ -177,67 +354,132 @@ const noResults =
   document.getElementById("noResults");
 
 
+// =====================================================
+// BLANK FOR UNDEFINED / NULL
+// =====================================================
+//
+// If a value is undefined or null,
+// show nothing instead.
+//
+// Example:
+//
+// undefined → ""
+// null      → ""
+// 390       → 390
+//
+// =====================================================
+
+function displayValue(value){
+
+  if(value === undefined || value === null){
+    return "";
+  }
+
+  return value;
+
+}
+
+
+// =====================================================
+// RENDER TABLE
+// =====================================================
+
 function renderTable(filteredProducts){
 
-  tableBody.innerHTML="";
+  tableBody.innerHTML = "";
 
-  if(filteredProducts.length===0){
 
-    noResults.style.display="block";
+  // No products
+
+  if(filteredProducts.length === 0){
+
+    noResults.style.display = "block";
 
     return;
 
   }
 
-  noResults.style.display="none";
 
-  filteredProducts.forEach(p=>{
+  noResults.style.display = "none";
 
-    const row=`
+
+  // Add products
+
+  filteredProducts.forEach(p => {
+
+    const row = `
 
       <tr>
 
-        <td>${p[0]}</td>
+        <td>
+          ${displayValue(p[0])}
+        </td>
 
-        <td>${p[1]}</td>
+        <td>
+          ${displayValue(p[1])}
+        </td>
 
-        <td class="wholesale">${p[2]}</td>
+        <td class="wholesale">
+          ${displayValue(p[2])}
+        </td>
 
-        <td class="wholesale">${p[3]}</td>
+        <td class="wholesale">
+          ${displayValue(p[3])}
+        </td>
 
-        <td class="retail">${p[4]}</td>
+        <td class="retail">
+          ${displayValue(p[4])}
+        </td>
 
-        <td class="retail">${p[5]}</td>
+        <td class="retail">
+          ${displayValue(p[5])}
+        </td>
 
       </tr>
 
     `;
 
-    tableBody.innerHTML+=row;
+
+    tableBody.innerHTML += row;
 
   });
 
 }
 
 
-// Initial render
+// =====================================================
+// INITIAL TABLE
+// =====================================================
+
 renderTable(products);
 
 
-// Search
-searchInput.addEventListener("input",function(){
+// =====================================================
+// SEARCH
+// =====================================================
 
-  const query=this.value.toLowerCase();
+searchInput.addEventListener(
+  "input",
+  function(){
 
-  const filtered=products.filter(p=>
-    p[0].toLowerCase().includes(query)
-  );
+    const query =
+      this.value.toLowerCase().trim();
 
-  renderTable(filtered);
 
-});
+    const filtered =
+      products.filter(p =>
+        p[0].toLowerCase().includes(query)
+      );
+
+
+    renderTable(filtered);
+
+  }
+);
 
 </script>
 
+
 </body>
+
 </html>
